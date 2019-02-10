@@ -31,6 +31,7 @@
     </style>
   </head>
   <body>
+
     <section>Alpha 1 This is stuff</section>
     <section>Bravo 2</section>
     <section>Charlie 3</section>
@@ -67,27 +68,14 @@
       }
 
       function toggleFullscreen() {
-        const isInFullScreen =
-          (document.fullscreenElement && document.fullscreenElement !== null) ||
-          (document.webkitFullscreenElement &&
-            document.webkitFullscreenElement !== null) ||
-          (document.mozFullScreenElement &&
-            document.mozFullScreenElement !== null) ||
-          (document.msFullscreenElement &&
-            document.msFullscreenElement !== null);
-
-        const docElm = document.documentElement;
-        if (!isInFullScreen) {
-          if (docElm.requestFullscreen) {
-            docElm.requestFullscreen();
-          } else if (docElm.mozRequestFullScreen) {
-            docElm.mozRequestFullScreen();
-          } else if (docElm.webkitRequestFullScreen) {
-            docElm.webkitRequestFullScreen();
-          } else if (docElm.msRequestFullscreen) {
-            docElm.msRequestFullscreen();
-          }
-        } else {
+        const isFullscreen = Boolean(
+          document.fullscreenElement ||
+          document.webkitFullscreenElement ||
+          document.mozFullScreenElement ||
+          document.msFullscreenElement
+        );
+        const element = document.documentElement;
+        if (isFullscreen) {
           if (document.exitFullscreen) {
             document.exitFullscreen();
           } else if (document.webkitExitFullscreen) {
@@ -97,18 +85,20 @@
           } else if (document.msExitFullscreen) {
             document.msExitFullscreen();
           }
+        } else {
+          if (element.requestFullscreen) {
+            element.requestFullscreen();
+          } else if (element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+          } else if (element.webkitRequestFullScreen) {
+            element.webkitRequestFullScreen();
+          } else if (element.msRequestFullscreen) {
+            element.msRequestFullscreen();
+          }
         }
       }
 
-      const sections = Array.from(document.querySelectorAll("section"));
-      sections.forEach((elem, i) => {
-        if (!elem.id) {
-          elem.id = i + 1;
-        }
-      });
-      const state = { index: getInitialIndex() };
-      goTo(state.index);
-      addEventListener("keydown", event => {
+      function keyHandler(event) {
         switch (event.key) {
           case "ArrowRight":
           case "ArrowDown":
@@ -137,7 +127,13 @@
           default:
             return;
         }
-      });
+      }
+
+      const sections = Array.from(document.querySelectorAll("section"));
+      sections.forEach((elem, i) => { elem.id = i + 1; });
+      const state = { index: getInitialIndex() };
+      goTo(state.index);
+      addEventListener("keydown", keyHandler);
     </script>
   </body>
 </html>
