@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Presentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        font-size: 7vw;
+        font-family:
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          Oxygen,
+          Ubuntu,
+          Cantarell,
+          "Open Sans",
+          "Helvetica Neue",
+          sans-serif;
+        --fg: hsl(115, 100%, 15%);
+        --bg: hsl(115, 100%, 95%);
+        background: black;
+        color: white;
+      }
+
+      section {
+        background: var(--bg);
+        color: var(--fg);
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        padding: 3vh 3vw;
+        /* opacity: 0; */
+        white-space: pre-line;
+      }
+
+      section:target {
+        z-index: 1;
+      }
+    </style>
+  </head>
+  <body>
+
+    <section>Alpha 1
+      This is stuff
+    </section>
+    <section>Bravo 2</section>
+    <section>Charlie 3</section>
+    <section>Delta 4</section>
+    <section>Echo 5</section>
+    <section>Foxtrot 6</section>
+
+    <script type="module">
+      const sections = Array.from(document.querySelectorAll("section"));
+      function getInitialIndex() {
+        const id = window.location.hash.slice(1);
+        const elem = document.getElementById(id);
+        const i = sections.indexOf(elem);
+        if (i < 0) {
+          return 0;
+        }
+        return i;
+      }
+      function goTo(i) {
+        i = Math.max(0, Math.min(sections.length - 1, i));
+        const section = sections[i];
+        const id = section ? section.id : i;
+        window.location.hash = `#${id}`;
+        state.index = i;
+        document.title = `${i + 1} of ${sections.length}`;
+      }
+      function goNext() {
+        return goTo(state.index + 1);
+      }
+      function goPrev() {
+        return goTo(state.index - 1);
+      }
+      sections.forEach((elem, i) => {
+        if (!elem.id) {
+          elem.id = i + 1;
+        }
+      });
+      const state = {
+        index: getInitialIndex()
+      };
+      goTo(state.index);
+      addEventListener("keydown", event => {
+        switch (event.key) {
+          case "ArrowRight":
+          case "ArrowDown":
+          case "s":
+          case "d":
+          case "j":
+          case "l":
+            return goNext();
+          case "ArrowLeft":
+          case "ArrowUp":
+          case "a":
+          case "w":
+          case "k":
+          case "h":
+          case "b":
+            return goPrev();
+          case " ":
+            return event.shiftKey ? goPrev() : goNext();
+          default:
+            return;
+        }
+      });
+    </script>
+  </body>
+</html>
